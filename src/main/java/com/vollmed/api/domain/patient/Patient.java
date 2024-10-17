@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,12 +26,13 @@ public class Patient {
     private String email;
 
     @Column(name = "cpf")
-    private String CPF;
+    private String cpf;
 
     private String phone;
 
     private boolean active;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -41,5 +43,4 @@ public class Patient {
     @ManyToOne
     @JoinColumn(name = "fk_administrator_id")
     private Administrator createdBy;
-
 }
