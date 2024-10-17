@@ -2,6 +2,7 @@ package com.vollmed.api.dtos;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
 
 public record UpdateAddressDTO(
         @Size(min = 8, max = 8, message = "Ccep inválido")
@@ -16,7 +17,6 @@ public record UpdateAddressDTO(
         @Size(max = 80, message = "o complemento pode ter no máximo 80 caracteris")
         String complement,
 
-        @Size(min = 1)
         int number,
 
         @JsonAlias("city_name") String cityName

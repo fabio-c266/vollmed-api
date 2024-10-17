@@ -14,7 +14,6 @@ public record UpdatePatientDTO(
         @Email(message = "email inválido")
         String email,
 
-        @NotBlank(message = "campo obrigatório")
         @Size(min = 11, max = 11, message = "número inválido")
         String phone,
 
