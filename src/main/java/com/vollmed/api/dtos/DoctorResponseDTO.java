@@ -1,6 +1,5 @@
 package com.vollmed.api.dtos;
 
-import com.vollmed.api.domain.address.Address;
 import com.vollmed.api.domain.doctor.Doctor;
 import com.vollmed.api.domain.doctor.DoctorSpecialties;
 
@@ -17,7 +16,7 @@ public record DoctorResponseDTO(
         LocalDateTime created_at,
         AddressResponseDTO address
 ) {
-    public DoctorResponseDTO(Doctor doctor, Address address) {
+    public DoctorResponseDTO(Doctor doctor) {
         this(
                 doctor.getId(),
                 doctor.getName(),
@@ -28,14 +27,14 @@ public record DoctorResponseDTO(
                 doctor.isActive(),
                 doctor.getCreatedAt(),
                 new AddressResponseDTO(
-                        address.getId(),
-                        address.getCEP(),
-                        address.getStreet(),
-                        address.getNeighborhood(),
-                        address.getComplement(),
-                        address.getNumber(),
-                        address.getCity().getName(),
-                        address.getCity().getUf().getName()
+                        doctor.getAddress().getId(),
+                        doctor.getAddress().getCEP(),
+                        doctor.getAddress().getStreet(),
+                        doctor.getAddress().getNeighborhood(),
+                        doctor.getAddress().getComplement(),
+                        doctor.getAddress().getNumber(),
+                        doctor.getAddress().getCity().getName(),
+                        doctor.getAddress().getCity().getUf().getName()
                 )
         );
     }
