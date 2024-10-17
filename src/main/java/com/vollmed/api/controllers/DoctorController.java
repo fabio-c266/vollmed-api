@@ -1,6 +1,5 @@
 package com.vollmed.api.controllers;
 
-import com.vollmed.api.domain.address.Address;
 import com.vollmed.api.domain.doctor.Doctor;
 import com.vollmed.api.dtos.CreateDoctorDTO;
 import com.vollmed.api.dtos.DoctorResponseDTO;
@@ -29,25 +28,23 @@ public class DoctorController {
     @PostMapping
     public ResponseEntity<DoctorResponseDTO> create(@RequestBody @Valid CreateDoctorDTO createDoctorDTO) throws EntityNotFoundException, ConflictException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String administratorEmail = auth.getName();
 
-        Doctor doctorCreated = this.doctorService.create(createDoctorDTO, auth.getName());
-        Address doctorAddress = doctorCreated.getAddress();
-        DoctorResponseDTO doctorResponseDTO = new DoctorResponseDTO(doctorCreated, doctorAddress);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(doctorResponseDTO);
+        Doctor newDoctor = this.doctorService.create(administratorEmail, createDoctorDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new DoctorResponseDTO(newDoctor));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DoctorResponseDTO> get(@PathVariable Long id) throws EntityNotFoundException {
         Doctor doctor = this.doctorService.getById(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(doctor, doctor.getAddress()));
+        return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(doctor));
     }
 
     @GetMapping("/all")
     public ResponseEntity<Page<DoctorResponseDTO>> listDoctors(@PageableDefault(size = 10, sort = {"name"}) Pageable pageable) {
         Page<Doctor> doctorsPage = this.doctorService.getAll(pageable);
-        Page<DoctorResponseDTO> formatted = doctorsPage.map(doctor -> new DoctorResponseDTO(doctor, doctor.getAddress()));
+        Page<DoctorResponseDTO> formatted = doctorsPage.map(DoctorResponseDTO::new);
 
         return ResponseEntity.ok().body(formatted);
     }
@@ -61,7 +58,7 @@ public class DoctorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<DoctorResponseDTO> alter(@PathVariable Long id, @RequestBody @Valid UpdateDoctorDTO updateDoctorDTO) throws EntityNotFoundException, ConflictException, DTOEmptyException {
-        Doctor DoctorUpdated = this.doctorService.update(id, updateDoctorDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(DoctorUpdated, DoctorUpdated.getAddress()));
+        Doctor doctorUpdated = this.doctorService.update(id, updateDoctorDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(doctorUpdated));
     }
 }
