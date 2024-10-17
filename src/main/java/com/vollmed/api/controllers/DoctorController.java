@@ -34,9 +34,9 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new DoctorResponseDTO(newDoctor));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DoctorResponseDTO> get(@PathVariable Long id) throws EntityNotFoundException {
-        Doctor doctor = this.doctorService.getById(id);
+    @GetMapping("/{doctorId}")
+    public ResponseEntity<DoctorResponseDTO> get(@PathVariable Long doctorId) throws EntityNotFoundException {
+        Doctor doctor = this.doctorService.getById(doctorId);
 
         return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(doctor));
     }
@@ -49,16 +49,16 @@ public class DoctorController {
         return ResponseEntity.ok().body(formatted);
     }
 
-    @GetMapping("/toggle/{id}")
-    public ResponseEntity toggleIsActive(@PathVariable Long id) throws EntityNotFoundException {
-        this.doctorService.toggleIsActive(id);
+    @GetMapping("/toggle/{doctorId}")
+    public ResponseEntity toggleIsActive(@PathVariable Long doctorId) throws EntityNotFoundException {
+        this.doctorService.toggleIsActive(doctorId);
 
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DoctorResponseDTO> alter(@PathVariable Long id, @RequestBody @Valid UpdateDoctorDTO updateDoctorDTO) throws EntityNotFoundException, ConflictException, DTOEmptyException {
-        Doctor doctorUpdated = this.doctorService.update(id, updateDoctorDTO);
+    @PutMapping("/{doctorId}")
+    public ResponseEntity<DoctorResponseDTO> alter(@PathVariable Long doctorId, @RequestBody @Valid UpdateDoctorDTO updateDoctorDTO) throws EntityNotFoundException, ConflictException, DTOEmptyException {
+        Doctor doctorUpdated = this.doctorService.update(doctorId, updateDoctorDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new DoctorResponseDTO(doctorUpdated));
     }
 }
