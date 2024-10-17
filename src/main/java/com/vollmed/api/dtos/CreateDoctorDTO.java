@@ -30,4 +30,5 @@ public record CreateDoctorDTO(
 
         @NotNull(message = "Objeto endereço vazio")
         @JsonAlias("address") @Valid CreateAddressDTO createAddressDTO
-        ) { }
+) {
+}
