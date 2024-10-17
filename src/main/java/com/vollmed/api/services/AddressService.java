@@ -3,7 +3,7 @@ package com.vollmed.api.services;
 import com.vollmed.api.domain.address.Address;
 import com.vollmed.api.domain.address.City;
 import com.vollmed.api.dtos.CreateAddressDTO;
-import com.vollmed.api.exceptions.EntityNotFound;
+import com.vollmed.api.exceptions.EntityNotFoundException;
 import com.vollmed.api.repositories.AddressRepository;
 import com.vollmed.api.repositories.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ public class AddressService {
     @Autowired
     private AddressRepository addressRepository;
 
-    public City getCityByName(String name) throws EntityNotFound {
-        return cityRepository.findByName(name).orElseThrow(() -> new EntityNotFound("City"));
+    public City getCityByName(String name) throws EntityNotFoundException {
+        return cityRepository.findByName(name).orElseThrow(() -> new EntityNotFoundException("City"));
     }
 
-    public Address create(CreateAddressDTO createAddressDTO) throws EntityNotFound {
+    public Address create(CreateAddressDTO createAddressDTO) throws EntityNotFoundException {
         String cityName = createAddressDTO.cityName();
         City city = this.getCityByName(cityName);
 
