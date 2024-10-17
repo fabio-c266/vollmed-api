@@ -11,8 +11,13 @@ public class AdministratorService {
     @Autowired
     private AdministratorRepository administratorRepository;
 
-    public Administrator getAdministratorByEmail(String email) throws EntityNotFoundException {
-        return this.administratorRepository.findByEmail(email)
+    public Administrator getById(Long id) throws EntityNotFoundException {
+        return this.administratorRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Administrator"));
+    }
+
+    public Administrator getByEmail(String email) throws EntityNotFoundException {
+        return this.administratorRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Administrator by email"));
     }
 }
