@@ -1,7 +1,6 @@
 package com.vollmed.api.services;
 
 import com.vollmed.api.domain.address.Address;
-import com.vollmed.api.domain.address.City;
 import com.vollmed.api.domain.administrator.Administrator;
 import com.vollmed.api.domain.doctor.Doctor;
 import com.vollmed.api.dtos.CreateDoctorDTO;
@@ -27,7 +26,9 @@ public class DoctorService {
     @Autowired
     private AdministratorService administratorService;
 
-    public Doctor create(CreateDoctorDTO createDoctorDTO, String administratorEmail) throws ConflictException, EntityNotFoundException {
+    public Doctor create(String administratorEmail, CreateDoctorDTO createDoctorDTO) throws ConflictException, EntityNotFoundException {
+        Administrator administrator = this.administratorService.getByEmail(administratorEmail);
+
         if (this.doctorRepository.findByEmail(createDoctorDTO.email()).isPresent()) {
             throw new ConflictException("email");
         }
@@ -40,12 +41,7 @@ public class DoctorService {
             throw new ConflictException("phone");
         }
 
-        Administrator administrator = this.administratorService.getAdministratorByEmail(administratorEmail);
-        String cityName = createDoctorDTO.createAddressDTO().cityName();
-        City city = addressService.getCityByName(cityName);
-
         Address newAddress = this.addressService.create(createDoctorDTO.createAddressDTO());
-
         Doctor newDoctor = new Doctor(
                 null,
                 createDoctorDTO.name(),
@@ -63,61 +59,45 @@ public class DoctorService {
     }
 
     public Doctor getById(Long id) throws EntityNotFoundException {
-        return this.doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor"));
-    }
-
-    public Doctor getByEmail(String email) throws EntityNotFoundException {
-        return this.doctorRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Doctor"));
-    }
-
-    public Doctor getByPhone(String phone) throws EntityNotFoundException {
-        return this.doctorRepository.findByPhone(phone).orElseThrow(() -> new EntityNotFoundException("Doctor"));
-    }
-
-    public void isValidId(Long id) throws EntityNotFoundException {
-        if (!this.doctorRepository.existsById(id)) {
-            throw new EntityNotFoundException("Doctor");
-        }
+        return this.doctorRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Doctor"));
     }
 
     @Transactional
     public Doctor update(Long id, UpdateDoctorDTO updateDoctorDTO) throws DTOEmptyException, ConflictException, EntityNotFoundException {
-        this.isValidId(id);
-        Doctor target = this.doctorRepository.getReferenceById(id);
+        Doctor doctor = this.getById(id);
 
         if (updateDoctorDTO == null) throw new DTOEmptyException();
-        if (updateDoctorDTO.name() != null) target.setName(updateDoctorDTO.name());
+        if (updateDoctorDTO.name() != null) doctor.setName(updateDoctorDTO.name());
 
         if (updateDoctorDTO.email() != null) {
-            if (this.getByEmail(updateDoctorDTO.email()) != null) {
-                throw new ConflictException("Email");
+            if (this.doctorRepository.findByEmail(updateDoctorDTO.email()).isPresent()) {
+                throw new ConflictException("email");
             }
 
-            target.setEmail(updateDoctorDTO.email());
+            doctor.setEmail(updateDoctorDTO.email());
         }
 
         if (updateDoctorDTO.phone() != null) {
-            if (this.getByPhone(updateDoctorDTO.phone()) != null) {
-                throw new ConflictException("Phone");
+            if (this.doctorRepository.findByPhone(updateDoctorDTO.phone()).isPresent()) {
+                throw new ConflictException("phone");
             }
 
-            target.setPhone(updateDoctorDTO.phone());
+            doctor.setPhone(updateDoctorDTO.phone());
         }
 
-        if (updateDoctorDTO.updateAddressDTO() != null && updateDoctorDTO.updateAddressDTO().cityName() != null) {
-            City city = this.addressService.getCityByName(updateDoctorDTO.updateAddressDTO().cityName());
+        if (updateDoctorDTO.updateAddressDTO() != null) {
+            Address addressUpdated = this.addressService.update(doctor.getAddress().getId(), updateDoctorDTO.updateAddressDTO());
 
-            target.getAddress().setCity(city);
+            if (!doctor.getAddress().equals(addressUpdated)) doctor.setAddress(addressUpdated);
         }
 
-        return target;
+        return doctor;
     }
 
     @Transactional
     public void toggleIsActive(Long id) throws EntityNotFoundException {
-        this.isValidId(id);
-        Doctor doctor = this.doctorRepository.getReferenceById(id);
-
+        Doctor doctor = this.getById(id);
         doctor.setActive(!doctor.isActive());
     }
 
