@@ -2,6 +2,6 @@ package com.vollmed.api.exceptions;
 
 public class InvalidCredentialsException extends Exception {
     public InvalidCredentialsException() {
-        super("Invalid credentials");
+        super("Credenciais inválidas");
     }
 }
