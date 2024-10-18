@@ -1,7 +1,7 @@
 package com.vollmed.api.controllers;
 
 import com.vollmed.api.dtos.AuthLoginDTO;
-import com.vollmed.api.dtos.CreatedTokenResponseDTO;
+import com.vollmed.api.dtos.TokenResponseDTO;
 import com.vollmed.api.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,9 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<CreatedTokenResponseDTO> login(@RequestBody @Valid AuthLoginDTO authLoginDTO) throws Exception {
+    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid AuthLoginDTO authLoginDTO) throws Exception {
         String token = authService.login(authLoginDTO);
 
-        return ResponseEntity.ok().body(new CreatedTokenResponseDTO(token));
+        return ResponseEntity.ok().body(new TokenResponseDTO(token));
     }
 }
