@@ -56,7 +56,7 @@ public class PatientController {
     }
 
     @GetMapping("/toggle/{patientId}")
-    public ResponseEntity toggleIsActive(@PathVariable Long patientId) throws EntityNotFoundException {
+    public ResponseEntity<Void> toggleIsActive(@PathVariable Long patientId) throws EntityNotFoundException {
         this.patientService.toggleIsActive(patientId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
