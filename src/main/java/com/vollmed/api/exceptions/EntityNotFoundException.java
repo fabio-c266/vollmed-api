@@ -2,6 +2,6 @@ package com.vollmed.api.exceptions;
 
 public class EntityNotFoundException extends Exception {
     public EntityNotFoundException(String entityName) {
-        super(entityName + " not found");
+        super(entityName + " não encontrado");
     }
 }
