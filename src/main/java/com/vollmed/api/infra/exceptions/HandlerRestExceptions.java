@@ -52,4 +52,12 @@ public class HandlerRestExceptions {
 
         return ResponseEntity.badRequest().body(errorsFormatted);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponseDTO> handlerErrors(Exception e) {
+        System.out.println(e.getMessage());
+
+        return ResponseEntity.badRequest()
+                .body(new ExceptionResponseDTO("Infelizmente ocorreu um erro durante a requisição, tente novamente mais tarde"));
+    }
 }

@@ -6,6 +6,7 @@ import com.vollmed.api.dtos.CreateConsultationDTO;
 import com.vollmed.api.exceptions.EntityNotFoundException;
 import com.vollmed.api.exceptions.ValidationServiceException;
 import com.vollmed.api.services.ConsultationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/consultation")
+@SecurityRequirement(name = "bearer-key")
 public class ConsultationController {
     @Autowired
     private ConsultationService consultationService;

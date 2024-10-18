@@ -8,6 +8,7 @@ import com.vollmed.api.exceptions.ConflictException;
 import com.vollmed.api.exceptions.DTOEmptyException;
 import com.vollmed.api.exceptions.EntityNotFoundException;
 import com.vollmed.api.services.DoctorService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/doctor")
+@SecurityRequirement(name = "bearer-key")
 public class DoctorController {
     @Autowired
     private DoctorService doctorService;
