@@ -3,17 +3,21 @@ package com.vollmed.api.services;
 import com.vollmed.api.domain.address.Address;
 import com.vollmed.api.domain.administrator.Administrator;
 import com.vollmed.api.domain.doctor.Doctor;
+import com.vollmed.api.domain.doctor.DoctorSpecialties;
 import com.vollmed.api.dtos.CreateDoctorDTO;
 import com.vollmed.api.dtos.UpdateDoctorDTO;
 import com.vollmed.api.exceptions.ConflictException;
 import com.vollmed.api.exceptions.DTOEmptyException;
 import com.vollmed.api.exceptions.EntityNotFoundException;
+import com.vollmed.api.exceptions.ValidationServiceException;
 import com.vollmed.api.repositories.DoctorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class DoctorService {
@@ -99,6 +103,11 @@ public class DoctorService {
     public void toggleIsActive(Long id) throws EntityNotFoundException {
         Doctor doctor = this.getById(id);
         doctor.setActive(!doctor.isActive());
+    }
+
+    public Doctor getRandomDoctorBySpecialty(DoctorSpecialties specialty, LocalDateTime consultationDate) throws EntityNotFoundException, ValidationServiceException {
+        return this.doctorRepository.findRandomDoctorBySpecialty(specialty, consultationDate)
+                .orElseThrow(() -> new ValidationServiceException("Nenhum médico disponível nessa data"));
     }
 
     public Page<Doctor> getAll(Pageable pageable) {
